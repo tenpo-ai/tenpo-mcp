@@ -1,6 +1,6 @@
 {
   "name": "@tenpo/mcp",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Tenpo — the operator that runs alongside your store. Connects to 45+ commerce platforms (Shopify, Klaviyo, Meta Ads, GA4, Stripe…) and gives any AI host (Claude Desktop, Cursor, Claude Code, ChatGPT) deterministic answers about your sales, ads, email, inventory, suppliers, customers, finance, and competitors. Free tier, no card required.",
   "license": "MIT",
   "homepage": "https://tenpo.ai",
@@ -23,7 +23,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod +x dist/index.js",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
     "prepublishOnly": "npm run build"
