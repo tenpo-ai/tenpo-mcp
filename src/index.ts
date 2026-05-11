@@ -444,16 +444,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
  * saw nothing but a stringified blob.
  */
 function formatToolResult(result: unknown): { content: Array<{ type: "text"; text: string }>; isError?: boolean } {
-  // Type guard: try to pull data.chat_message safely
   const r = result as
     | {
         ok?: boolean;
         error?: string;
-        data?: { chat_message?: string; instruction_for_host_ai?: string } & Record<string, unknown>;
+        data?: {
+          chat_message?: string;
+          details?: { chat_message?: string } & Record<string, unknown>;
+        } & Record<string, unknown>;
       }
     | undefined;
 
-  // Error path: backend returned ok:false. Show it cleanly.
+  // Error path
   if (r && r.ok === false) {
     return {
       content: [
@@ -464,7 +466,13 @@ function formatToolResult(result: unknown): { content: Array<{ type: "text"; tex
     };
   }
 
-  const chatMessage = r?.data?.chat_message;
+  // chat_message can live at:
+  //   data.chat_message              — MCP-direct tools (onboarding, can_help_with, etc.)
+  //   data.details.chat_message      — gateway tools wrapped via jsonResult()
+  const chatMessage =
+    r?.data?.details?.chat_message ??
+    r?.data?.chat_message;
+
   if (typeof chatMessage === "string" && chatMessage.length > 0) {
     // Primary: the chat-ready message. Secondary: structured JSON for introspection.
     return {
@@ -475,8 +483,10 @@ function formatToolResult(result: unknown): { content: Array<{ type: "text"; tex
     };
   }
 
-  // No chat_message — fall back to pretty-printed JSON.
-  return formatToolResult(result);
+  // No chat_message — return JSON directly (no recursion!)
+  return {
+    content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+  };
 }
 
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
