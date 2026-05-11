@@ -1,7 +1,7 @@
 {
   "name": "@tenpo/mcp",
-  "version": "0.2.0",
-  "description": "Tenpo MCP — give any AI tool (Claude Code, Cursor, Claude Desktop, Codex) deterministic access to your store data, supplier scorecards, customer intelligence, creative pattern library, and 229 commerce-ops tools. Free tier, no LLM cost on our side.",
+  "version": "0.2.1",
+  "description": "Tenpo — the operator that runs alongside your store. Connects to 45+ commerce platforms (Shopify, Klaviyo, Meta Ads, GA4, Stripe…) and gives any AI host (Claude Desktop, Cursor, Claude Code, ChatGPT) deterministic answers about your sales, ads, email, inventory, suppliers, customers, finance, and competitors. Free tier, no card required.",
   "license": "MIT",
   "homepage": "https://tenpo.ai",
   "repository": {
