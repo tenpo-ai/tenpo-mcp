@@ -432,6 +432,53 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
   return { tools: [...TOOLS, ...dynamicEntries] };
 });
 
+/**
+ * Format a backend tool result as MCP CallTool content.
+ *
+ * Many Tenpo tools return `data.chat_message` — a pre-formatted, chat-ready
+ * string the host AI should display verbatim. Surface that as the PRIMARY
+ * text block; append the structured JSON afterward so the host AI can still
+ * introspect (e.g. for follow-up tool calls or to read `instruction_for_host_ai`).
+ *
+ * This stops the old "double-encoded JSON inside JSON" UX where the host AI
+ * saw nothing but a stringified blob.
+ */
+function formatToolResult(result: unknown): { content: Array<{ type: "text"; text: string }>; isError?: boolean } {
+  // Type guard: try to pull data.chat_message safely
+  const r = result as
+    | {
+        ok?: boolean;
+        error?: string;
+        data?: { chat_message?: string; instruction_for_host_ai?: string } & Record<string, unknown>;
+      }
+    | undefined;
+
+  // Error path: backend returned ok:false. Show it cleanly.
+  if (r && r.ok === false) {
+    return {
+      content: [
+        { type: "text", text: `Error: ${r.error ?? "Tool execution failed"}` },
+        { type: "text", text: JSON.stringify(result, null, 2) },
+      ],
+      isError: true,
+    };
+  }
+
+  const chatMessage = r?.data?.chat_message;
+  if (typeof chatMessage === "string" && chatMessage.length > 0) {
+    // Primary: the chat-ready message. Secondary: structured JSON for introspection.
+    return {
+      content: [
+        { type: "text", text: chatMessage },
+        { type: "text", text: JSON.stringify(result, null, 2) },
+      ],
+    };
+  }
+
+  // No chat_message — fall back to pretty-printed JSON.
+  return formatToolResult(result);
+}
+
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   await ensureApiKey();
   const { name, arguments: args = {} } = request.params;
@@ -443,7 +490,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           method: "POST",
           body: args,
         });
-        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        return formatToolResult(result);
       }
 
       case "tenpo_run_tool": {
@@ -453,7 +500,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           method: "POST",
           body: a.args ?? {},
         });
-        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        return formatToolResult(result);
       }
 
       case "tenpo_classify_intent": {
@@ -515,7 +562,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const a = args as { resource?: string };
         if (!a.resource) throw new Error("resource name required");
         const result = await tenpoFetch(`/api/v1/resources/${encodeURIComponent(a.resource)}`);
-        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        return formatToolResult(result);
       }
 
       case "tenpo_get_prompt": {
@@ -530,7 +577,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           path += `?${params.toString()}`;
         }
         const result = await tenpoFetch(path);
-        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        return formatToolResult(result);
       }
 
       case "tenpo_list_prompts": {
@@ -539,7 +586,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           ? `/api/v1/prompts?q=${encodeURIComponent(a.q)}`
           : `/api/v1/prompts`;
         const result = await tenpoFetch(path);
-        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        return formatToolResult(result);
       }
 
       case "tenpo_connect_integration": {
@@ -550,13 +597,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             method: "POST",
             body: { integration_id: a.integration_id, credentials: a.credentials },
           });
-          return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+          return formatToolResult(result);
         }
         const result = await tenpoFetch("/api/v1/connect/start", {
           method: "POST",
           body: { integration_id: a.integration_id },
         });
-        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        return formatToolResult(result);
       }
 
       case "tenpo_remember": {
@@ -567,7 +614,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           method: "POST",
           body: { content, scope: a.scope ?? a.memory_type ?? "fact", mode: a.mode ?? "append" },
         });
-        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        return formatToolResult(result);
       }
       // tenpo_pattern_detect, tenpo_fetch_url, tenpo_write_md, tenpo_route_skills,
       // tenpo_overview cases DROPPED — host AI's native capabilities cover them.
@@ -588,7 +635,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           `/api/v1/tools/${encodeURIComponent(name)}`,
           { method: "POST", body: args },
         );
-        return { content: [{ type: "text", text: JSON.stringify(result, null, 2) }] };
+        return formatToolResult(result);
       }
     }
   } catch (err) {

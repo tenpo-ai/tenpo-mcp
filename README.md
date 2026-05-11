@@ -237,6 +237,9 @@ That's the first line. **First run auto-issues a free API key** (500 calls/month
 
 The second line goes into your AI host's config:
 
+> ⚠️ **After editing the config, fully restart your AI host.**
+> MCP servers are loaded at host startup — `claude mcp add`, saving Claude Desktop's config, or editing Cursor's MCP settings will register Tenpo, but the new tools won't appear in your running session until you **quit and relaunch the app** (Cmd+Q on Mac, fully close on Windows). This is a host-side limitation, not a Tenpo one.
+
 <details>
 <summary><b>Claude Desktop</b> · <code>claude_desktop_config.json</code></summary>
 
