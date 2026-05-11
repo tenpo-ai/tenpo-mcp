@@ -90,7 +90,7 @@ async function tenpoFetch(
 async function ensureApiKey(): Promise<void> {
   if (TENPO_API_KEY) return;
 
-  log("No TENPO_API_KEY set. Issuing free-tier key (500 calls/day, no expiry).");
+  log("No TENPO_API_KEY set — auto-issuing a free key (500 calls/month, no card, no expiry).");
   try {
     // /api/v1/connect/issue-key is the current name; backend also accepts the
     // legacy /trial-key for back-compat with older MCP package versions.
@@ -101,24 +101,27 @@ async function ensureApiKey(): Promise<void> {
       api_key?: string;
       merchant_id?: string;
       tier?: string;
+      monthly_call_limit?: number;
       daily_call_limit?: number;
       upgrade_url?: string;
       connect_url?: string;
     };
     if (res.api_key) {
       TENPO_API_KEY = res.api_key;
+      const limit = res.monthly_call_limit ?? res.daily_call_limit ?? 500;
       log(
         `\n` +
           `╔══════════════════════════════════════════════════════════════════════╗\n` +
-          `║ Tenpo MCP — Free Tier API Key Issued                                ║\n` +
+          `║ Tenpo — Free Key Issued                                              ║\n` +
           `╠══════════════════════════════════════════════════════════════════════╣\n` +
-          `║ Save this in your MCP config to keep using the same key:            ║\n` +
+          `║ Add this to your MCP config so the same key is reused next time:    ║\n` +
           `║                                                                      ║\n` +
           `║   TENPO_API_KEY=${(res.api_key ?? "").padEnd(54)}║\n` +
           `║                                                                      ║\n` +
-          `║ Free tier: ${(res.daily_call_limit ?? 500).toString().padEnd(4)} calls/day, no expiry.${" ".repeat(28)}║\n` +
-          `║ Upgrade for higher limits: ${(res.upgrade_url ?? "https://tenpo.ai/billing/upgrade").padEnd(42)}║\n` +
-          `║ Connect your store:        ${(res.connect_url ?? "https://tenpo.ai/connect").padEnd(42)}║\n` +
+          `║ Free tier: ${limit.toString().padEnd(4)} calls/month · resets the 1st (UTC) · no expiry.${" ".repeat(2)}║\n` +
+          `║ Upgrade ($19/mo unlimited): ${(res.upgrade_url ?? "https://tenpo.ai").padEnd(41)}║\n` +
+          `║ Connect your store:         ${(res.connect_url ?? "https://tenpo.ai").padEnd(41)}║\n` +
+          `║ Questions? contact@tenpo.ai                                          ║\n` +
           `╚══════════════════════════════════════════════════════════════════════╝\n`,
       );
     }

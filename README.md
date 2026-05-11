@@ -9,7 +9,6 @@ Tenpo runs your dashboards *for* you — across every platform, every minute, in
 
 [![npm](https://img.shields.io/npm/v/@tenpo/mcp.svg?style=flat-square&color=000)](https://www.npmjs.com/package/@tenpo/mcp)
 [![license](https://img.shields.io/badge/license-MIT-000.svg?style=flat-square)](LICENSE)
-[![docs](https://img.shields.io/badge/docs-tenpo.ai-000.svg?style=flat-square)](https://tenpo.ai)
 
 [**Get started in 2 lines →**](#install-in-2-lines)  ·  [**See it think →**](#how-tenpo-thinks)  ·  [**What it covers →**](#what-tenpo-covers)
 
@@ -35,14 +34,13 @@ When you ask Tenpo something, it doesn't look up a pre-calculated answer. It que
 
 It's like having a business partner who:
 
-- Has memorised every order, product, customer, campaign, and supplier
-- Monitors your store 24/7, even when you're asleep
+- Has memorised every order, product, customer, campaign, and supplier — once you connect them
 - Spots problems before they become expensive
 - Connects dots no human analyst would realistically cross-reference
 - Knows *when to act* and *when to ask*
 - Gets smarter about your specific business the longer you work together
 
-You bring an AI host (Claude, Cursor, ChatGPT). Tenpo brings the synapses. **Your AI does the thinking, Tenpo provides the truth.**
+You bring an AI host (Claude Desktop, Cursor, Claude Code, Codex, Hermes, OpenClaw — anything that speaks MCP). Tenpo brings the synapses. **Your AI does the thinking, Tenpo provides the truth.**
 
 ---
 
@@ -158,19 +156,19 @@ What's my true ROAS after COGS + shipping + fees · which campaigns to pause rig
 
 <tr><td><b>Customers</b></td><td>
 
-Who's about to churn · predicted next order date per customer · top 1% / 10% / 25% concentration risk · cross-sell next-best-product · win-back the right customers at the right time · respond to support tickets in Gorgias/Zendesk · reply to reviews on Trustpilot/Okendo/Judge.me
+Who's about to churn · predicted next order date per customer · top 1% / 10% / 25% concentration risk · cross-sell next-best-product · win-back the right customers at the right time · respond to support tickets in Gorgias / Zendesk · reply to reviews on Trustpilot / Okendo / Judge.me
 
 </td></tr>
 
 <tr><td><b>Finance & Operations</b></td><td>
 
-P&L waterfall (gross → COGS → fees → ad spend → operating profit) · what's leaking at each step · process Stripe refunds · push invoices to Xero/QuickBooks · create shipping labels · track shipments · sales-tax nexus monitoring · payout holds and disputes
+P&L waterfall (gross → COGS → fees → ad spend → operating profit) · what's leaking at each step · process Stripe refunds · push invoices to Xero / QuickBooks · create shipping labels · track shipments · sales-tax nexus monitoring · payout holds and disputes
 
 </td></tr>
 
 <tr><td><b>Competitors</b></td><td>
 
-What's [competitor] priced at right now · who dropped prices this week · what emails are top brands sending this month · new SKUs they launched · their promo cadence · benchmark my AOV / LTV / repurchase rate against peers in my category (k-anonymous)
+What's [competitor] priced at right now · who dropped prices this week · what emails are top brands sending this month · new SKUs they launched · their promo cadence · benchmark my AOV / LTV / repurchase rate against peers in my category (anonymous, k≥3 merchants)
 
 </td></tr>
 
@@ -182,7 +180,7 @@ Every Monday morning, send me a store overview · when revenue drops 30%, ping m
 
 </table>
 
-Eight headline sectors. Behind them: **45+ platform integrations, 229 tools your AI can call, 155 specialist skills loaded on demand, and 17 background patterns Tenpo watches for continuously.**
+Eight headline sectors. Behind them: **47 platform integrations, 229 tools your AI can call, and 100+ specialist skills loaded automatically based on what you ask.**
 
 ---
 
@@ -209,23 +207,23 @@ When you ask about pricing, it thinks in a **Velocity × Margin matrix**. When y
 
 ---
 
-## Proactive monitoring — Tenpo watching when you're not
+## Background watchers — for connected stores
 
-Every 15 minutes — no AI required, just pure logic — Tenpo runs background checks:
+Once you've connected at least one integration, Tenpo runs background checks on your data automatically — no tier upgrade required, no manual setup:
 
-| Watch | What it catches |
+| Watcher | What it catches |
 |---|---|
 | **Stock risk** | Products getting dangerously close to selling out before the next supplier delivery |
-| **Revenue anomaly** | Unexplained drops in week-over-week revenue |
-| **Supplier delays** | POs that didn't arrive by their expected date |
-| **Customer churn wave** | Regular customers who've gone quiet |
-| **Dead stock growth** | Products sitting in your warehouse not moving |
-| **Wasted ad spend** | Campaigns running below breakeven ROAS, ads on out-of-stock products |
-| **Concentration risk** | Too much revenue from too few customers |
+| **Revenue cliff** | Unexplained week-over-week revenue drops |
+| **Refund spike** | Today's refund count exceeding 3× the recent baseline |
+| **ROAS death** | Ad campaigns running below breakeven |
+| **Dead stock with active ads** | Ad spend on SKUs that haven't sold in 14+ days while inventory sits |
+| **Payment failure spike** | Stripe / processor anomalies signalling card-data drift or outages |
+| **Inventory desync** | DB stock says "available", Shopify says "out" — pipeline drift |
 
-When it spots something, you get a notification on your preferred channel — Telegram, WhatsApp, Slack, email. When the situation resolves itself, the alert closes automatically.
+When a watcher fires, you get a notification on the channel you set up — Telegram, WhatsApp, Slack, or email. When the situation resolves itself, the alert closes automatically.
 
-By the time you open your phone in the morning, Tenpo has already been watching your store all night.
+> **What this needs:** at least one connected store + a notification channel set up. Watchers don't run for accounts that registered but never connected anything (we don't burn cycles on empty data).
 
 ---
 
@@ -235,7 +233,7 @@ By the time you open your phone in the morning, Tenpo has already been watching 
 npx -y @tenpo/mcp
 ```
 
-That's the first line. First run auto-issues a free API key (500 calls/day, no expiry, no card).
+That's the first line. **First run auto-issues a free API key** (500 calls/month, no expiry, no card, no signup form). The key prints once in the host's stderr — copy it into your config so it's reused next time.
 
 The second line goes into your AI host's config:
 
@@ -253,7 +251,7 @@ The second line goes into your AI host's config:
 }
 ```
 
-Restart Claude Desktop. The first call prints your key — paste it into `env.TENPO_API_KEY` to keep using the same one:
+Restart Claude Desktop. The first call prints your auto-generated key — paste it into `env.TENPO_API_KEY` to keep using the same one across restarts:
 
 ```json
 {
@@ -276,6 +274,8 @@ Restart Claude Desktop. The first call prints your key — paste it into `env.TE
 claude mcp add tenpo --command "npx -y @tenpo/mcp"
 ```
 
+The first call auto-issues your key. Add it to the env if you want it persisted across machines.
+
 </details>
 
 <details>
@@ -295,12 +295,23 @@ Settings → MCP → Add new global MCP server:
 }
 ```
 
+Leave `TENPO_API_KEY` blank on first run — it'll be auto-issued and printed. Then paste it in.
+
 </details>
 
 <details>
-<summary><b>Codex, ChatGPT Desktop, Hermes, OpenClaw, or any MCP-compatible host</b></summary>
+<summary><b>Codex · OpenClaw · Hermes · or any MCP-compatible host</b></summary>
 
-Standard stdio transport. Point the client at `npx -y @tenpo/mcp` with `TENPO_API_KEY` in env. The MCP package is a 15 KB stdio↔HTTPS proxy — works anywhere.
+Standard stdio transport. Point the client at `npx -y @tenpo/mcp`. The package is a small stdio↔HTTPS proxy — works in any MCP host.
+
+You don't need to provide an API key on first run. The MCP package will:
+
+1. See no `TENPO_API_KEY` in env
+2. Call the public `/api/v1/connect/issue-key` endpoint
+3. Print your new key to stderr in a framed banner
+4. Use it for the rest of the session
+
+Save the key from that banner into `env.TENPO_API_KEY` so subsequent runs reuse it (otherwise a new key is issued each time).
 
 </details>
 
@@ -312,25 +323,27 @@ Once installed, just talk to your AI as you normally would. Say *"connect my sto
 
 Tenpo supports any storefront. Just say which one you're on:
 
-| Native, paste-token (90 seconds) | Native OAuth (3 min) | Custom adapters (5 min) | Anything else |
+| Native, paste-token (90 sec) | Native OAuth (3 min) | Custom adapters (5 min) | Anything else |
 |---|---|---|---|
 | Shopify, WooCommerce | Amazon, Etsy | Squarespace, Wix, BigCommerce, Magento, Adobe Commerce, Salesforce Commerce Cloud, Webflow | CSV / JSON import — accepts Shopify, Woo, and Stripe export formats as-is |
 
-After your store connects, layer in the platforms that matter to you — Klaviyo, Mailchimp, Omnisend, Meta Ads, Google Ads, TikTok Ads, Google Analytics 4, Stripe, Gorgias, Zendesk, Xero, QuickBooks, Slack, Telegram, WhatsApp, 40+ others. Each one is a one-line ask: *"connect my Klaviyo."*
+After your store connects, layer in the platforms that matter to you — Klaviyo, Mailchimp, Omnisend, Meta Ads, Google Ads, TikTok Ads, Google Analytics 4, Stripe, Gorgias, Zendesk, Xero, QuickBooks, Slack, Telegram, WhatsApp, 30+ others. Each one is a one-line ask: *"connect my Klaviyo."*
 
 ---
 
 ## Pricing
 
-| Tier | Daily calls | Cost | What you get |
+| Tier | Cap | Price | What you get |
 |---|---|---|---|
-| **Free** | 500 / day | $0 | Every tool. Every integration. 1 connected store. No expiry. No card. |
-| **Pro Monthly** | 5,000 / day | $19 / mo | Everything in Free, higher limits, priority support |
-| **Pro Yearly** | Unlimited | $190 / yr | Everything in Pro, no daily cap, save $38 |
+| **Free** | 500 calls / **month** | $0 | Every tool. Every integration. 1 connected store. No expiry. No card. |
+| **Pro Monthly** | **Unlimited** | $19 / month | Everything in Free with no monthly cap. |
+| **Pro Yearly** | **Unlimited** | $190 / year | Same as Pro Monthly, save $38. |
 
-Your same API key works across tiers — upgrade just changes the server-side limit. When you hit the free-tier cap, every response includes a one-click upgrade link. Pay → tier bumps in seconds (Dodo Payments).
+Your same API key works across tiers — upgrade just lifts the cap server-side. When you hit the free-tier cap, every response includes a one-click upgrade link. Pay → cap lifts in seconds (Dodo Payments).
 
-**You always pay for your AI's tokens. Tenpo runs zero LLMs on our side** — every analytical tool is deterministic SQL or HTTP. That's why the free tier is genuinely free.
+The monthly cap resets on the 1st (UTC). 500 calls is roughly 50–80 user messages a month — enough to evaluate, plus comfortable light use.
+
+**You always pay for your AI's tokens. Tenpo runs no LLM in the analytical path on our side** — every analytical tool is deterministic SQL or HTTP. That's why the free tier is genuinely free.
 
 ---
 
@@ -338,12 +351,12 @@ Your same API key works across tiers — upgrade just changes the server-side li
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│  Claude Desktop · Cursor · Claude Code · ChatGPT · your host AI  │
+│  Claude Desktop · Cursor · Claude Code · Codex · Hermes · etc.   │
 └──────────────────────┬───────────────────────────────────────────┘
                        │  MCP protocol (stdio JSON-RPC)
                        ▼
 ┌──────────────────────────────────────────────────────────────────┐
-│  @tenpo/mcp  (this package, 15 KB — pure stdio↔HTTPS proxy)      │
+│  @tenpo/mcp  (this package — small stdio↔HTTPS proxy)            │
 └──────────────────────┬───────────────────────────────────────────┘
                        │  HTTPS, Bearer tnp_live_*
                        ▼
@@ -351,9 +364,9 @@ Your same API key works across tiers — upgrade just changes the server-side li
 │  Tenpo backend                                                   │
 │  ├─ 229 deterministic tools (SQL helpers + HTTP integrations)    │
 │  ├─ Per-merchant database (your data, isolated, encrypted)       │
-│  ├─ Background syncs every 15 min (Klaviyo, Meta, GA4, Stripe…)  │
-│  ├─ Heartbeat monitors (revenue, stock, supplier, churn, ads…)   │
-│  └─ K-anonymous network telemetry (peer benchmarks, k≥3)         │
+│  ├─ Background syncs every 15 min (only for connected merchants) │
+│  ├─ Background watchers (revenue, stock, supplier, churn, ads…)  │
+│  └─ Anonymous network telemetry (peer benchmarks, k≥3 merchants) │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -366,7 +379,7 @@ Your AI does the synthesis. Tenpo provides the synapses.
 - **Your data is yours.** Per-merchant database, isolated from every other merchant. No cross-tenant queries are possible.
 - **Network telemetry is anonymous.** When Tenpo learns from cross-merchant patterns (e.g. "what most stores in your category approve"), merchant IDs are salt-hashed irreversibly. Free-text fields (email, phone, $ amounts, IDs, API tokens) are stripped to placeholders before any aggregation.
 - **K-anonymity (k≥3).** No stat surfaces until at least 3 distinct merchants contributed to it. You're never the only data point.
-- **No LLM on the analytical path.** Your data doesn't get sent to any model — Tenpo runs SQL and returns rows. Your AI (Claude, Cursor, etc.) sees the rows and writes a sentence.
+- **No LLM on the analytical path.** Your data isn't sent to a model — Tenpo runs SQL and returns rows. Your AI host (Claude, Cursor, etc.) sees the rows and writes a sentence.
 - **Retention.** Raw events expire after 90 days. Aggregates kept indefinitely (already anonymised).
 
 ---
@@ -403,18 +416,17 @@ You don't need to know which tool runs. You don't need to learn a syntax. **Just
 
 ## Status
 
-- ✅ Production. Live at **[tenpo.ai](https://tenpo.ai)**.
-- ✅ Sub-10ms p50 latency on analytical tools (verified on multi-gigabyte stores).
-- ✅ 45+ platform integrations.
-- ✅ K-anonymous network intelligence with peer benchmarks.
-- ✅ Standard Webhooks signature verification + idempotent billing flow.
+- 🟢 Backend live at `api.tenpo.ai`
+- 🟢 Sub-10ms p50 latency on analytical tools (verified live)
+- 🟢 47 platform integrations
+- 🟢 Anonymous network intelligence with peer benchmarks
+- 🟡 Public-facing site at tenpo.ai is in active development
 
 ---
 
 ## Support
 
 Questions, issues, feedback → **contact@tenpo.ai**
-Website → **[tenpo.ai](https://tenpo.ai)**
 
 ---
 
