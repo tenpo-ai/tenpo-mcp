@@ -1,0 +1,55 @@
+{
+  "name": "@tenpo/mcp",
+  "version": "0.2.0",
+  "description": "Tenpo MCP — give any AI tool (Claude Code, Cursor, Claude Desktop, Codex) deterministic access to your store data, supplier scorecards, customer intelligence, creative pattern library, and 229 commerce-ops tools. Free tier, no LLM cost on our side.",
+  "license": "MIT",
+  "homepage": "https://tenpo.ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tenpo-ai/tenpo-mcp"
+  },
+  "bugs": {
+    "url": "https://github.com/tenpo-ai/tenpo-mcp/issues"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "tenpo-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "tenpo",
+    "shopify",
+    "woocommerce",
+    "klaviyo",
+    "meta-ads",
+    "ecommerce",
+    "ai-agent",
+    "claude-code",
+    "cursor"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0"
+  }
+}
